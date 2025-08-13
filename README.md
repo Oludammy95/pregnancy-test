@@ -1,36 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Pregnancy Risk Assessment Application
+
+A Next.js application for assessing pregnancy risks using AI models for Ectopic and Molar pregnancy prediction.
+
+## Features
+
+- **Ectopic Pregnancy Risk Assessment**: Comprehensive evaluation based on patient demographics, history, symptoms, lab tests, and ultrasound findings
+- **Molar Pregnancy Risk Assessment**: Detailed assessment including clinical symptoms, laboratory data, and imaging results
+- **Responsive Design**: Built with Tailwind CSS for optimal viewing on all devices
+- **Component-Based Architecture**: Modular, reusable components for easy maintenance
+- **Form Validation**: Built-in validation for required fields and data types
+- **Real-time Results**: Instant risk assessment with recommendations
+
+## Tech Stack
+
+- **Frontend**: Next.js, React, Tailwind CSS
+- **Icons**: Heroicons
+- **Styling**: Tailwind CSS with custom gradients and animations
 
 ## Getting Started
 
-First, run the development server:
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+├── pages/
+│   ├── _app.js          # App wrapper
+│   ├── index.js         # Home page
+│   ├── ectopic.js       # Ectopic pregnancy assessment
+│   └── molar.js         # Molar pregnancy assessment
+├── components/
+│   ├── Layout.js        # Main layout component
+│   ├── FormInput.js     # Reusable form input component
+│   └── FormSection.js   # Form section wrapper
+├── styles/
+│   └── globals.css      # Global styles and Tailwind imports
+└── public/              # Static assets
+```
 
-## Learn More
+## Components
 
-To learn more about Next.js, take a look at the following resources:
+### Layout
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Responsive navigation with mobile menu
+- Gradient backgrounds and professional styling
+- Footer with medical disclaimer
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### FormInput
 
-## Deploy on Vercel
+- Supports multiple input types (text, number, radio, select)
+- Built-in validation and error handling
+- Consistent styling across all form elements
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### FormSection
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Organized form sections with icons
+- Responsive grid layout
+- Clear visual hierarchy
+
+## API Integration Ready
+
+The application is structured to easily integrate with AI prediction APIs:
+
+- Form data is collected and formatted for API calls
+- Loading states and error handling are implemented
+- Results display component is ready for real prediction data
+
+## Medical Disclaimer
+
+This application is designed for educational and informational purposes only. It should not replace professional medical advice, diagnosis, or treatment. Always consult qualified healthcare professionals for medical decisions.
+
+## License
+
+This project is for educational purposes

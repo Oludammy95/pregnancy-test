@@ -1,0 +1,455 @@
+"use client";
+import { useState } from "react";
+import Layout from "../../components/Header";
+import FormInput from "../../components/FormInput";
+import FormSection from "../../components/FormSection";
+import {
+  UserIcon,
+  ExclamationTriangleIcon,
+  BeakerIcon,
+  MagnifyingGlassIcon,
+  UserGroupIcon,
+  CheckCircleIcon,
+  HeartIcon,
+  ShieldExclamationIcon,
+} from "@heroicons/react/24/outline";
+
+const MolarPregnancy = () => {
+  const [formData, setFormData] = useState({
+    // Patient Demographics
+    age: "",
+    ageGroup: "",
+    gravida: "",
+    parity: "",
+    historyOfMolarPregnancy: "",
+    historyOfMiscarriages: "",
+    numberOfMiscarriages: "",
+
+    // Presenting Symptoms
+    vaginalBleeding: "",
+    excessiveNausea: "",
+    pelvicPain: "",
+    passageOfVesicles: "",
+    uterineSizeLarger: "",
+
+    // Laboratory Data
+    quantitativeHCG: "",
+    bloodGroup: "",
+    rhStatus: "",
+    thyroidFunction: "",
+
+    // Ultrasound Findings
+    gestationalSacPresent: "",
+    fetalHeartbeat: "",
+    snowstormAppearance: "",
+    ovarianCysts: "",
+
+    // Other Risk Factors
+    assistedReproduction: "",
+    smokingAlcohol: "",
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [result, setResult] = useState(null);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    // Simulate API call
+    setTimeout(() => {
+      setResult({
+        riskLevel: "Moderate",
+        percentage: "45%",
+        recommendations: [
+          "Immediate obstetric consultation recommended",
+          "Serial hCG monitoring every 48-72 hours",
+          "Detailed ultrasound examination required",
+          "Consider tissue sampling if indicated",
+          "Close follow-up until hCG normalizes",
+        ],
+      });
+      setIsSubmitting(false);
+    }, 2000);
+  };
+
+  const yesNoOptions = [
+    { value: "yes", label: "Yes" },
+    { value: "no", label: "No" },
+  ];
+
+  const ageGroupOptions = [
+    { value: "<20", label: "Less than 20 years" },
+    { value: "20-35", label: "20-35 years" },
+    { value: ">35", label: "More than 35 years" },
+  ];
+
+  const bloodGroupOptions = [
+    { value: "A+", label: "A+" },
+    { value: "A-", label: "A-" },
+    { value: "B+", label: "B+" },
+    { value: "B-", label: "B-" },
+    { value: "AB+", label: "AB+" },
+    { value: "AB-", label: "AB-" },
+    { value: "O+", label: "O+" },
+    { value: "O-", label: "O-" },
+  ];
+
+  const rhStatusOptions = [
+    { value: "positive", label: "Positive" },
+    { value: "negative", label: "Negative" },
+  ];
+
+  const thyroidOptions = [
+    { value: "normal", label: "Normal" },
+    { value: "hyperthyroid", label: "Hyperthyroid" },
+    { value: "hypothyroid", label: "Hypothyroid" },
+    { value: "unknown", label: "Unknown/Not tested" },
+  ];
+
+  return (
+    <Layout>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="inline-flex p-3 rounded-full bg-gradient-to-r from-purple-100 to-blue-100 mb-4">
+            <UserGroupIcon className="h-8 w-8 text-purple-600" />
+          </div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+            Molar Pregnancy Risk Assessment
+          </h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Complete this comprehensive assessment to evaluate the risk of molar
+            pregnancy based on patient demographics, clinical symptoms,
+            laboratory data, and ultrasound findings.
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-8">
+          {/* Patient Demographics */}
+          <FormSection title="Patient Demographics" icon={UserIcon}>
+            <FormInput
+              label="Age"
+              name="age"
+              type="number"
+              value={formData.age}
+              onChange={handleInputChange}
+              placeholder="Enter age in years"
+              required
+            />
+            <FormInput
+              label="Age Group"
+              name="ageGroup"
+              type="select"
+              value={formData.ageGroup}
+              onChange={handleInputChange}
+              options={ageGroupOptions}
+              required
+            />
+            <FormInput
+              label="Gravida (Number of previous pregnancies)"
+              name="gravida"
+              type="number"
+              value={formData.gravida}
+              onChange={handleInputChange}
+              placeholder="Total pregnancies including current"
+              required
+            />
+            <FormInput
+              label="Parity (Number of births)"
+              name="parity"
+              type="number"
+              value={formData.parity}
+              onChange={handleInputChange}
+              placeholder="Number of live births"
+              required
+            />
+            <FormInput
+              label="History of Molar Pregnancy"
+              name="historyOfMolarPregnancy"
+              type="radio"
+              value={formData.historyOfMolarPregnancy}
+              onChange={handleInputChange}
+              options={yesNoOptions}
+              required
+            />
+            <FormInput
+              label="History of Miscarriages"
+              name="historyOfMiscarriages"
+              type="radio"
+              value={formData.historyOfMiscarriages}
+              onChange={handleInputChange}
+              options={yesNoOptions}
+              required
+            />
+            {formData.historyOfMiscarriages === "yes" && (
+              <FormInput
+                label="Number of Miscarriages"
+                name="numberOfMiscarriages"
+                type="number"
+                value={formData.numberOfMiscarriages}
+                onChange={handleInputChange}
+                placeholder="Enter number of miscarriages"
+                required
+              />
+            )}
+          </FormSection>
+
+          {/* Presenting Symptoms */}
+          <FormSection title="Presenting Symptoms" icon={HeartIcon}>
+            <FormInput
+              label="Vaginal Bleeding"
+              name="vaginalBleeding"
+              type="radio"
+              value={formData.vaginalBleeding}
+              onChange={handleInputChange}
+              options={yesNoOptions}
+              required
+            />
+            <FormInput
+              label="Excessive Nausea/Vomiting (Hyperemesis Gravidarum)"
+              name="excessiveNausea"
+              type="radio"
+              value={formData.excessiveNausea}
+              onChange={handleInputChange}
+              options={yesNoOptions}
+              required
+            />
+            <FormInput
+              label="Pelvic Pain or Discomfort"
+              name="pelvicPain"
+              type="radio"
+              value={formData.pelvicPain}
+              onChange={handleInputChange}
+              options={yesNoOptions}
+              required
+            />
+            <FormInput
+              label="Passage of Vesicles (grape-like clusters or fluid-filled sacs)"
+              name="passageOfVesicles"
+              type="radio"
+              value={formData.passageOfVesicles}
+              onChange={handleInputChange}
+              options={yesNoOptions}
+              required
+            />
+            <FormInput
+              label="Uterine size larger than gestational age / Belly growing faster than expected"
+              name="uterineSizeLarger"
+              type="radio"
+              value={formData.uterineSizeLarger}
+              onChange={handleInputChange}
+              options={yesNoOptions}
+              required
+            />
+          </FormSection>
+
+          {/* Laboratory Data */}
+          <FormSection title="Laboratory Data" icon={BeakerIcon}>
+            <FormInput
+              label="Quantitative hCG levels (mIU/mL)"
+              name="quantitativeHCG"
+              type="number"
+              value={formData.quantitativeHCG}
+              onChange={handleInputChange}
+              placeholder="Enter hCG level"
+              required
+            />
+            <FormInput
+              label="Blood Group"
+              name="bloodGroup"
+              type="select"
+              value={formData.bloodGroup}
+              onChange={handleInputChange}
+              options={bloodGroupOptions}
+              required
+            />
+            <FormInput
+              label="Rh Status"
+              name="rhStatus"
+              type="select"
+              value={formData.rhStatus}
+              onChange={handleInputChange}
+              options={rhStatusOptions}
+              required
+            />
+            <FormInput
+              label="Thyroid Function Test Results"
+              name="thyroidFunction"
+              type="select"
+              value={formData.thyroidFunction}
+              onChange={handleInputChange}
+              options={thyroidOptions}
+              helpText="Hyperthyroidism may occur with molar pregnancy"
+            />
+          </FormSection>
+
+          {/* Ultrasound Findings */}
+          <FormSection title="Ultrasound Findings" icon={MagnifyingGlassIcon}>
+            <FormInput
+              label="Gestational Sac Present?"
+              name="gestationalSacPresent"
+              type="radio"
+              value={formData.gestationalSacPresent}
+              onChange={handleInputChange}
+              options={yesNoOptions}
+              required
+            />
+            <FormInput
+              label="Fetal Heartbeat Detected?"
+              name="fetalHeartbeat"
+              type="radio"
+              value={formData.fetalHeartbeat}
+              onChange={handleInputChange}
+              options={yesNoOptions}
+              required
+            />
+            <FormInput
+              label="'Snowstorm' or 'Cluster of grapes' appearance?"
+              name="snowstormAppearance"
+              type="radio"
+              value={formData.snowstormAppearance}
+              onChange={handleInputChange}
+              options={yesNoOptions}
+              helpText="Classic ultrasound appearance of molar pregnancy"
+              required
+            />
+            <FormInput
+              label="Ovarian Theca Lutein Cysts Present?"
+              name="ovarianCysts"
+              type="radio"
+              value={formData.ovarianCysts}
+              onChange={handleInputChange}
+              options={yesNoOptions}
+              required
+            />
+          </FormSection>
+
+          {/* Other Risk Factors */}
+          <FormSection title="Other Risk Factors" icon={ShieldExclamationIcon}>
+            <FormInput
+              label="Use of Assisted Reproductive Technology (IVF, IUI)"
+              name="assistedReproduction"
+              type="radio"
+              value={formData.assistedReproduction}
+              onChange={handleInputChange}
+              options={yesNoOptions}
+              required
+            />
+            <FormInput
+              label="Smoking or Alcohol Use During Pregnancy"
+              name="smokingAlcohol"
+              type="radio"
+              value={formData.smokingAlcohol}
+              onChange={handleInputChange}
+              options={yesNoOptions}
+              required
+            />
+          </FormSection>
+
+          {/* Submit Button */}
+          <div className="text-center">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:from-purple-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105"
+            >
+              {isSubmitting ? (
+                <div className="flex items-center">
+                  <svg
+                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  Analyzing...
+                </div>
+              ) : (
+                "Assess Molar Pregnancy Risk"
+              )}
+            </button>
+          </div>
+        </form>
+
+        {/* Results */}
+        {result && (
+          <div className="mt-8 bg-white rounded-xl shadow-lg border border-gray-200 p-6">
+            <div className="text-center mb-6">
+              <div className="inline-flex p-3 rounded-full bg-gradient-to-r from-green-100 to-blue-100 mb-4">
+                <CheckCircleIcon className="h-8 w-8 text-green-600" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                Assessment Complete
+              </h2>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="text-center p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg">
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  Risk Level
+                </h3>
+                <div className="text-3xl font-bold text-purple-600">
+                  {result.riskLevel}
+                </div>
+                <div className="text-xl text-gray-600">{result.percentage}</div>
+              </div>
+
+              <div className="p-4 bg-blue-50 rounded-lg">
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                  Recommendations
+                </h3>
+                <ul className="space-y-2">
+                  {result.recommendations.map((rec, index) => (
+                    <li key={index} className="flex items-start">
+                      <CheckCircleIcon className="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
+                      <span className="text-sm text-gray-700">{rec}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <div className="mt-6 p-4 bg-amber-50 border-l-4 border-amber-400 rounded">
+              <div className="flex">
+                <ExclamationTriangleIcon className="h-5 w-5 text-amber-400 mr-3 flex-shrink-0" />
+                <div>
+                  <p className="text-sm text-amber-700">
+                    <strong>Important:</strong> This assessment is for
+                    informational purposes only. Molar pregnancy requires
+                    immediate medical attention and specialized treatment.
+                    Please consult with a qualified healthcare professional
+                    immediately.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </Layout>
+  );
+};
+
+export default MolarPregnancy;

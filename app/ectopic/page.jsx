@@ -299,7 +299,7 @@ const EctopicPregnancy = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="bg-gradient-to-r from-red-800 to-pink-600 text-black px-8 py-3 rounded-lg font-medium hover:from-red-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 border-1 border-red-800"
+              className="bg-gradient-to-r from-red-800 to-pink-600 text-white px-8 py-3 rounded-lg font-medium hover:from-red-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 border-1 border-red-800"
             >
               {isSubmitting ? (
                 <div className="flex items-center">
