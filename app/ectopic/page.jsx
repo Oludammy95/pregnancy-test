@@ -61,20 +61,36 @@ const EctopicPregnancy = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      // Import the API function dynamically
+      const { predictEctopic } = await import("../../utils/api");
+
+      // Call the actual API
+      const response = await predictEctopic(formData);
+
+      if (response.success) {
+        setResult(response.result);
+      } else {
+        setResult({
+          riskLevel: "Error",
+          percentage: "N/A",
+          recommendations: ["Unable to process prediction. Please try again."],
+        });
+      }
+    } catch (error) {
+      console.error("Prediction error:", error);
       setResult({
-        riskLevel: "High",
-        percentage: "78%",
+        riskLevel: "Error",
+        percentage: "N/A",
         recommendations: [
-          "Immediate gynecological consultation recommended",
-          "Serial hCG monitoring advised",
-          "Consider transvaginal ultrasound",
-          "Patient requires close monitoring",
+          "Error occurred during prediction",
+          "Please check your input data and try again",
+          "If the problem persists, contact support",
         ],
       });
-      setIsSubmitting(false);
-    }, 2000);
+    }
+
+    setIsSubmitting(false);
   };
 
   const yesNoOptions = [
@@ -249,7 +265,6 @@ const EctopicPregnancy = () => {
               value={formData.serumHCGLevel}
               onChange={handleInputChange}
               placeholder="Enter hCG level"
-              required
             />
             <FormInput
               label="Progesterone Level (ng/mL)"
@@ -259,7 +274,6 @@ const EctopicPregnancy = () => {
               value={formData.progesteroneLevel}
               onChange={handleInputChange}
               placeholder="Enter progesterone level"
-              required
             />
           </FormSection>
 
@@ -272,7 +286,6 @@ const EctopicPregnancy = () => {
               value={formData.uterineSizeByUltrasound}
               onChange={handleInputChange}
               placeholder="Enter measurement"
-              required
             />
             <FormInput
               label="Adnexal Mass Present"
@@ -281,7 +294,6 @@ const EctopicPregnancy = () => {
               value={formData.adnexalMass}
               onChange={handleInputChange}
               options={yesNoOptions}
-              required
             />
             <FormInput
               label="Free Fluid in Pouch of Douglas"
@@ -290,7 +302,6 @@ const EctopicPregnancy = () => {
               value={formData.freeFluidInPouchOfDouglas}
               onChange={handleInputChange}
               options={yesNoOptions}
-              required
             />
           </FormSection>
 
@@ -299,7 +310,7 @@ const EctopicPregnancy = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="bg-gradient-to-r from-red-800 to-pink-600 text-white px-8 py-3 rounded-lg font-medium hover:from-red-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 border-1 border-red-800"
+              className="bg-gradient-to-r from-red-600 to-pink-600 text-white px-8 py-3 rounded-lg font-medium hover:from-red-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105"
             >
               {isSubmitting ? (
                 <div className="flex items-center">

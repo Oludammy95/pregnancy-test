@@ -7,8 +7,8 @@ import {
   UserIcon,
   ExclamationTriangleIcon,
   BeakerIcon,
-  MagnifyingGlassIcon,
   UserGroupIcon,
+  MagnifyingGlassIcon,
   CheckCircleIcon,
   HeartIcon,
   ShieldExclamationIcon,
@@ -64,21 +64,36 @@ const MolarPregnancy = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      // Import the API function dynamically
+      const { predictMolar } = await import("../../utils/api");
+
+      // Call the actual API
+      const response = await predictMolar(formData);
+
+      if (response.success) {
+        setResult(response.result);
+      } else {
+        setResult({
+          riskLevel: "Error",
+          percentage: "N/A",
+          recommendations: ["Unable to process prediction. Please try again."],
+        });
+      }
+    } catch (error) {
+      console.error("Prediction error:", error);
       setResult({
-        riskLevel: "Moderate",
-        percentage: "45%",
+        riskLevel: "Error",
+        percentage: "N/A",
         recommendations: [
-          "Immediate obstetric consultation recommended",
-          "Serial hCG monitoring every 48-72 hours",
-          "Detailed ultrasound examination required",
-          "Consider tissue sampling if indicated",
-          "Close follow-up until hCG normalizes",
+          "Error occurred during prediction",
+          "Please check your input data and try again",
+          "If the problem persists, contact support",
         ],
       });
-      setIsSubmitting(false);
-    }, 2000);
+    }
+
+    setIsSubmitting(false);
   };
 
   const yesNoOptions = [
@@ -261,7 +276,6 @@ const MolarPregnancy = () => {
               value={formData.quantitativeHCG}
               onChange={handleInputChange}
               placeholder="Enter hCG level"
-              required
             />
             <FormInput
               label="Blood Group"
@@ -270,7 +284,6 @@ const MolarPregnancy = () => {
               value={formData.bloodGroup}
               onChange={handleInputChange}
               options={bloodGroupOptions}
-              required
             />
             <FormInput
               label="Rh Status"
@@ -279,7 +292,6 @@ const MolarPregnancy = () => {
               value={formData.rhStatus}
               onChange={handleInputChange}
               options={rhStatusOptions}
-              required
             />
             <FormInput
               label="Thyroid Function Test Results"
@@ -301,7 +313,6 @@ const MolarPregnancy = () => {
               value={formData.gestationalSacPresent}
               onChange={handleInputChange}
               options={yesNoOptions}
-              required
             />
             <FormInput
               label="Fetal Heartbeat Detected?"
@@ -310,7 +321,6 @@ const MolarPregnancy = () => {
               value={formData.fetalHeartbeat}
               onChange={handleInputChange}
               options={yesNoOptions}
-              required
             />
             <FormInput
               label="'Snowstorm' or 'Cluster of grapes' appearance?"
@@ -320,7 +330,6 @@ const MolarPregnancy = () => {
               onChange={handleInputChange}
               options={yesNoOptions}
               helpText="Classic ultrasound appearance of molar pregnancy"
-              required
             />
             <FormInput
               label="Ovarian Theca Lutein Cysts Present?"
@@ -329,7 +338,6 @@ const MolarPregnancy = () => {
               value={formData.ovarianCysts}
               onChange={handleInputChange}
               options={yesNoOptions}
-              required
             />
           </FormSection>
 

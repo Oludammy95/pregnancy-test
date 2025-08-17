@@ -1,0 +1,8 @@
+{
+  "python.defaultInterpreterPath": "/Library/Frameworks/Python.framework/Versions/3.13/bin/python3.13",
+  "python.analysis.autoImportCompletions": true,
+  "python.analysis.extraPaths": [],
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.diagnosticMode": "workspace",
+  "python.analysis.useLibraryCodeForTypes": true
+}
