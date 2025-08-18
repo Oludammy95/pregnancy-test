@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "prebuild": "apt-get update && apt-get install -y python3 python3-pip || echo 'Python install skipped'",
+    "build": "yarn install-python && next build",
     "start": "next start",
     "lint": "next lint"
   },

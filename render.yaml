@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: your-app-name
+    env: node
+    buildCommand: |
+      # Install Python and dependencies
+      apt-get update
+      apt-get install -y python3 python3-pip
+      ln -sf /usr/bin/python3 /usr/bin/python
+      # Install Node dependencies
+      yarn install
+      yarn build
+    startCommand: yarn start
+    envVars:
+      - key: PYTHON_PATH
+        value: /usr/bin/python3
+      - key: PATH
+        value: /usr/bin:/bin:/usr/local/bin
