@@ -1,0 +1,14 @@
+[phases.setup]
+nixpkgs = ['nodejs_18', 'python39', 'python39Packages.pip']
+
+[phases.install]
+cmds = [
+    'npm install',
+    'pip install -r requirements.txt || echo "No requirements.txt found"'
+]
+
+[phases.build] 
+cmds = ['npm run build']
+
+[start]
+cmd = 'npm start'
