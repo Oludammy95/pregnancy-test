@@ -22,7 +22,7 @@ const EctopicPregnancy = () => {
     abortions: "",
 
     // Patient History
-    ectopicPregnancyHistory: "",
+    historyOfEctopicPregnancy: "",
     pelvicInflammatoryDisease: "",
     tubalSurgeryHistory: "",
     infertilityTreatment: "",
@@ -94,9 +94,10 @@ const EctopicPregnancy = () => {
   };
 
   const yesNoOptions = [
-    { value: "yes", label: "Yes" },
-    { value: "no", label: "No" },
-  ];
+  { value: "Yes", label: "Yes" },
+  { value: "No", label: "No" },
+];
+
 
   return (
     <Layout>
@@ -147,7 +148,7 @@ const EctopicPregnancy = () => {
               required
             />
             <FormInput
-              label="Abortions"
+              label="Abortion(s)/Miscarriage(s)"
               name="abortions"
               type="number"
               value={formData.abortions}
@@ -161,9 +162,9 @@ const EctopicPregnancy = () => {
           <FormSection title="Patient History" icon={ClockIcon}>
             <FormInput
               label="History of Ectopic Pregnancy"
-              name="ectopicPregnancyHistory"
+              name="historyOfEctopicPregnancy"
               type="radio"
-              value={formData.ectopicPregnancyHistory}
+               value={formData.historyOfEctopicPregnancy}
               onChange={handleInputChange}
               options={yesNoOptions}
               required
@@ -209,7 +210,7 @@ const EctopicPregnancy = () => {
               value={formData.smokingStatus}
               onChange={handleInputChange}
               options={yesNoOptions}
-              required
+               required
             />
             <FormInput
               label="Contraceptive Use"

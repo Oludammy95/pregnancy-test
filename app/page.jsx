@@ -1,4 +1,5 @@
-// import Layout from "../components/Layout";
+"use client";
+import { useEffect, useState } from "react";
 import Header from "../components/Header";
 import Link from "next/link";
 import {
@@ -11,14 +12,39 @@ import {
 } from "@heroicons/react/24/outline";
 
 const Home = () => {
+  const [antenatal, setAntenatal] = useState(null);
+
+  useEffect(() => {
+    async function fetchAntenatal() {
+      try {
+        const res = await fetch("/api/predict/Antenatal");
+        const data = await res.json();
+        setAntenatal(data);
+      } catch (error) {
+        console.error("Error fetching antenatal article:", error);
+      }
+    }
+    fetchAntenatal();
+  }, []);
+
   const features = [
+    {
+      icon: UserGroupIcon,
+      title: "Ante-Natal Care",
+      description:
+        "Learn about the importance of ante-natal care and how it helps pregnant women stay healthy.",
+      href: "/antenatal",
+      color: "from-green-500 to-teal-600",
+      buttonText: "Read",
+    },
     {
       icon: HeartIcon,
       title: "Ectopic Pregnancy Risk Assessment",
       description:
-        "Advanced AI model to evaluate risk factors for ectopic pregnancy with comprehensive patient data analysis.",
+        "AI model to evaluate risk factors for ectopic pregnancy with comprehensive patient data analysis.",
       href: "/ectopic",
       color: "from-red-500 to-pink-600",
+      buttonText: "Start",
     },
     {
       icon: UserGroupIcon,
@@ -27,6 +53,7 @@ const Home = () => {
         "Specialized prediction model for molar pregnancy risk based on clinical symptoms and laboratory findings.",
       href: "/molar",
       color: "from-blue-500 to-purple-600",
+      buttonText: "Start",
     },
   ];
 
@@ -60,7 +87,7 @@ const Home = () => {
             PregnancyCare AI
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Advanced AI-powered risk assessment tools for early detection and
+            AI-powered risk assessment tools for early detection and
             prevention of pregnancy complications. Supporting healthcare
             professionals with data-driven insights.
           </p>
@@ -106,7 +133,7 @@ const Home = () => {
                   {feature.description}
                 </p>
                 <div className="flex items-center text-blue-600 font-medium group-hover:text-blue-700">
-                  Start Assessment
+                  {feature.buttonText}
                   <svg
                     className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform"
                     fill="none"
@@ -132,7 +159,7 @@ const Home = () => {
             Why Choose PregnancyCare AI?
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Our advanced AI models provide healthcare professionals with
+            Our AI models provide healthcare professionals with
             reliable tools for early risk assessment and intervention planning.
           </p>
         </div>

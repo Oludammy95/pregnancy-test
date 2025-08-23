@@ -5,30 +5,65 @@ import { NextResponse } from "next/server";
 export async function POST(request) {
   try {
     const formData = await request.json();
-
-    // Log the incoming request for debugging
     console.log("Received form data:", JSON.stringify(formData, null, 2));
 
-    // Instead of requiring ALL fields, just validate that we have some essential data
-    const essentialFields = ["age"]; // At minimum, we should have age
+   // --- DOMAIN VALIDATION RULES ---
+const age = parseInt(formData.age, 10);
+const gravidity = parseInt(formData.gravidity, 10);
+const parity = parseInt(formData.parity, 10);
+const abortions = parseInt(formData.abortions, 10);
+const historyOfEctopicPregnancy = formData.historyOfEctopicPregnancy; // "Yes" or "No"
 
-    for (const field of essentialFields) {
-      if (!formData[field] && formData[field] !== 0) {
-        return NextResponse.json(
-          {
-            error: `Essential field missing: ${field}. At minimum, patient age is required.`,
-          },
-          { status: 400 }
-        );
-      }
+const errors = [];
+
+// Rule: Age range
+if (isNaN(age) || age < 15 || age > 49) {
+  errors.push("Age must be between 15 and 49 years.");
+}
+
+// Rule: Gravidity / Parity / Abortions must be non-negative
+if (gravidity < 0 || parity < 0 || abortions < 0) {
+  errors.push("Gravidity, parity, and abortions must be non-negative.");
+}
+
+// Rule: Parity ≤ Gravidity
+if (parity > gravidity) {
+  errors.push("Parity cannot exceed gravidity.");
+}
+
+// Rule: Abortions ≤ Gravidity
+if (abortions > gravidity) {
+  errors.push("Abortions cannot exceed gravidity.");
+}
+
+// Rule: Parity + Abortions ≤ Gravidity
+if (parity + abortions > gravidity) {
+  errors.push("Parity + abortions cannot exceed gravidity.");
+}
+
+// NEW RULE: If gravidity = 0 and parity = 0, history of ectopic pregnancy must be "No"
+if (gravidity === 0 && parity === 0 && historyOfEctopicPregnancy !== "No") {
+  errors.push(
+    "If gravidity and parity are both 0, history of ectopic pregnancy must be 'No'."
+  );
+}
+
+    if (errors.length > 0) {
+      return NextResponse.json(
+        {
+          error: "Invalid input",
+          details: errors,
+        },
+        { status: 400 }
+      );
     }
 
-    // Add PatientID if not provided
+    // --- If valid, continue processing ---
     if (!formData.PatientID) {
-      formData.PatientID = Date.now(); // Use timestamp as simple ID
+      formData.PatientID = Date.now();
     }
 
-    // Determine the correct Python script path
+    // Locate Python script
     const possiblePaths = [
       path.join(process.cwd(), "python", "model_predictor.py"),
       path.join(process.cwd(), "model_predictor.py"),
@@ -38,8 +73,6 @@ export async function POST(request) {
     ];
 
     let pythonScript = null;
-
-    // Check which path exists
     const fs = await import("fs");
     for (const scriptPath of possiblePaths) {
       try {
@@ -48,32 +81,50 @@ export async function POST(request) {
           console.log("Found Python script at:", scriptPath);
           break;
         }
-      } catch (e) {
-        // Continue to next path
-      }
+      } catch {}
     }
 
     if (!pythonScript) {
-      console.error(
-        "Python script not found in any of these locations:",
-        possiblePaths
-      );
       return NextResponse.json(
         {
           error: "Python script not found",
-          details: "model_predictor.py not found in expected locations",
           searchedPaths: possiblePaths,
         },
         { status: 500 }
       );
     }
 
-    // Try different Python commands
-    const pythonCommands = ["python3", "python", "py"];
-    let pythonCmd = "python3"; // default
+    // --- Auto-detect Python interpreter ---
+    const pythonCandidates =
+      process.platform === "win32"
+        ? ["python", "py", "python3"]
+        : ["python3", "python"];
+
+    let pythonCmd = null;
+    for (const candidate of pythonCandidates) {
+      try {
+        const check = spawn(candidate, ["--version"]);
+        await new Promise((resolve, reject) => {
+          check.on("exit", (code) => {
+            if (code === 0) {
+              pythonCmd = candidate;
+              resolve();
+            } else reject();
+          });
+          check.on("error", reject);
+        });
+        if (pythonCmd) break;
+      } catch {}
+    }
+
+    if (!pythonCmd) {
+      return NextResponse.json(
+        { error: "No valid Python interpreter found on system PATH" },
+        { status: 500 }
+      );
+    }
 
     console.log(`Calling Python script: ${pythonCmd} ${pythonScript} ectopic`);
-    console.log(`Form data: ${JSON.stringify(formData)}`);
 
     const python = spawn(
       pythonCmd,
@@ -88,39 +139,17 @@ export async function POST(request) {
     let errorString = "";
 
     python.stdout.on("data", (data) => {
-      const chunk = data.toString();
-      console.log("Python stdout:", chunk);
-      dataString += chunk;
+      dataString += data.toString();
     });
 
     python.stderr.on("data", (data) => {
-      const chunk = data.toString();
-      console.log("Python stderr:", chunk);
-      errorString += chunk;
+      errorString += data.toString();
     });
 
     return new Promise((resolve) => {
-      python.on("error", (err) => {
-        console.error("Failed to start Python process:", err);
-        resolve(
-          NextResponse.json(
-            {
-              error: "Failed to start Python process",
-              details: err.message,
-            },
-            { status: 500 }
-          )
-        );
-      });
-
       python.on("close", (code) => {
-        console.log(`Python process exited with code: ${code}`);
-        console.log(`Full stdout: ${dataString}`);
-        console.log(`Full stderr: ${errorString}`);
-
         if (code !== 0) {
-          console.error("Python script error:", errorString);
-          resolve(
+          return resolve(
             NextResponse.json(
               {
                 error: "Prediction failed",
@@ -130,23 +159,13 @@ export async function POST(request) {
               { status: 500 }
             )
           );
-          return;
         }
 
         try {
-          // Clean the output - sometimes there's extra logging
           const cleanOutput = dataString.trim();
           const lines = cleanOutput.split("\n");
-          const jsonLine = lines[lines.length - 1]; // Last line should be the JSON result
-
-          console.log("Attempting to parse JSON:", jsonLine);
-
+          const jsonLine = lines[lines.length - 1];
           const result = JSON.parse(jsonLine);
-
-          if (result.error) {
-            resolve(NextResponse.json(result, { status: 400 }));
-            return;
-          }
 
           resolve(
             NextResponse.json({
@@ -154,23 +173,17 @@ export async function POST(request) {
               result: result,
               debug: {
                 pythonScript,
+                pythonCmd,
                 formDataReceived: formData,
-                pythonOutput: errorString.includes("Info:")
-                  ? errorString
-                  : null,
               },
             })
           );
-        } catch (parseError) {
-          console.error("Parse error:", parseError);
-          console.error("Raw output:", dataString);
-          console.error("Attempting to parse:", dataString.trim());
-
+        } catch (err) {
           resolve(
             NextResponse.json(
               {
                 error: "Failed to parse prediction result",
-                details: parseError.message,
+                details: err.message,
                 rawOutput: dataString,
                 stderr: errorString,
               },
@@ -181,12 +194,8 @@ export async function POST(request) {
       });
     });
   } catch (error) {
-    console.error("API Error:", error);
     return NextResponse.json(
-      {
-        error: "Internal server error",
-        details: error.message,
-      },
+      { error: "Internal server error", details: error.message },
       { status: 500 }
     );
   }

@@ -107,7 +107,7 @@ const Header = ({ children }) => {
         <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <p className="text-gray-600 text-sm">
-              ©️ 2024 PregnancyCare AI. This tool is for informational purposes
+              ©️ 2025 PregnancyCare AI. This tool is for informational purposes
               only and should not replace professional medical advice.
             </p>
           </div>

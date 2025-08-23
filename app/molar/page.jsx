@@ -18,7 +18,6 @@ const MolarPregnancy = () => {
   const [formData, setFormData] = useState({
     // Patient Demographics
     age: "",
-    ageGroup: "",
     gravida: "",
     parity: "",
     historyOfMolarPregnancy: "",
@@ -101,12 +100,6 @@ const MolarPregnancy = () => {
     { value: "no", label: "No" },
   ];
 
-  const ageGroupOptions = [
-    { value: "<20", label: "Less than 20 years" },
-    { value: "20-35", label: "20-35 years" },
-    { value: ">35", label: "More than 35 years" },
-  ];
-
   const bloodGroupOptions = [
     { value: "A+", label: "A+" },
     { value: "A-", label: "A-" },
@@ -158,15 +151,6 @@ const MolarPregnancy = () => {
               value={formData.age}
               onChange={handleInputChange}
               placeholder="Enter age in years"
-              required
-            />
-            <FormInput
-              label="Age Group"
-              name="ageGroup"
-              type="select"
-              value={formData.ageGroup}
-              onChange={handleInputChange}
-              options={ageGroupOptions}
               required
             />
             <FormInput
