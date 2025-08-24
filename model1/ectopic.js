@@ -3,37 +3,36 @@ import mongoose from "mongoose";
 const EctopicSchema = new mongoose.Schema(
   {
     // Demographics
-    age: { type: Number, required: true, min: 15, max: 49 },
-    gravidity: { type: Number, required: true, min: 0 },
-    parity: { type: Number, required: true, min: 0 },
-    abortions: { type: Number, min: 0, default: 0 },
+    age: { type: Number, required: true },
+    gravidity: { type: Number, required: true },
+    parity: { type: Number, required: true },
+    abortions: { type: Number },
 
     // Patient History
-    historyOfEctopicPregnancy: { type: String, enum: ["Yes", "No"], default: "No" },
-    pelvicInflammatoryDisease: { type: String, enum: ["Yes", "No", "Unknown"], default: "Unknown" },
-    tubalSurgeryHistory: { type: String, enum: ["Yes", "No", "Unknown"], default: "Unknown" },
-    infertilityTreatment: { type: String, enum: ["Yes", "No", "Unknown"], default: "Unknown" },
+    historyOfEctopicPregnancy: { type: String },
+    pelvicInflammatoryDisease: { type: String },
+    tubalSurgeryHistory: { type: String },
+    infertilityTreatment: { type: String },
 
     // Risk Factors
-    smokingStatus: { type: String, enum: ["Yes", "No", "Unknown"], default: "Unknown" },
-    contraceptiveUse: { type: String, enum: ["Yes", "No", "Unknown"], default: "Unknown" },
+    smokingStatus: { type: String },
+    contraceptiveUse: { type: String },
 
     // Clinical & Symptoms
-    lastMenstrualPeriodDays: { type: Number, min: 0 },
-    vaginalBleeding: { type: String, enum: ["Yes", "No", "Unknown"], default: "Unknown" },
-    abdominalPain: { type: String, enum: ["Yes", "No", "Unknown"], default: "Unknown" },
+    lastMenstrualPeriodDays: { type: Number },
+    vaginalBleeding: { type: String },
+    abdominalPain: { type: String },
 
     // Laboratory Tests
-    serumHCGLevel: { type: Number, min: 0 },
-    progesteroneLevel: { type: Number, min: 0 },
+    serumHCGLevel: { type: Number },
+    progesteroneLevel: { type: Number },
 
     // Ultrasound Findings
     uterineSizeByUltrasound: { type: String },
-    adnexalMass: { type: String, enum: ["Yes", "No", "Unknown"], default: "Unknown" },
-    freeFluidInPouchOfDouglas: { type: String, enum: ["Yes", "No", "Unknown"], default: "Unknown" },
+    adnexalMass: { type: String },
+    freeFluidInPouchOfDouglas: { type: String },
   },
-  { timestamps: true, collection: "ectopic_cases" } // 👈 use consistent collection name
+  { timestamps: true }
 );
 
-export default mongoose.models.Ectopic ||
-  mongoose.model("Ectopic", EctopicSchema);
+export default mongoose.models.Ectopic || mongoose.model("Ectopic", EctopicSchema);

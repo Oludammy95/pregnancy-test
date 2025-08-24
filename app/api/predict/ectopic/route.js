@@ -1,13 +1,14 @@
 import { spawn } from "child_process";
 import path from "path";
 import { NextResponse } from "next/server";
-import { dbConnect } from "@/lib/mongodb";
 import ectopic from "@/model1/ectopic";
+
+import { dbConnect } from "@/lib/mongodb"; // 👈 your dbConnect function
 
 export async function POST(request) {
   try {
     const formData = await request.json();
-    console.log("📩 Received form data:", JSON.stringify(formData, null, 2));
+    console.log("📥 Received form data:", JSON.stringify(formData, null, 2));
 
     // --- DOMAIN VALIDATION RULES ---
     const age = parseInt(formData.age, 10);
@@ -33,9 +34,7 @@ export async function POST(request) {
       errors.push("Parity + abortions cannot exceed gravidity.");
     }
     if (gravidity === 0 && parity === 0 && historyOfEctopicPregnancy !== "No") {
-      errors.push(
-        "If gravidity and parity are 0, history of ectopic pregnancy must be 'No'."
-      );
+      errors.push("If gravidity and parity are 0, history of ectopic pregnancy must be 'No'.");
     }
 
     if (errors.length > 0) {
@@ -45,14 +44,22 @@ export async function POST(request) {
       );
     }
 
-    // --- SAVE TO MONGODB USING MONGOOSE ---
+    // Assign unique patient ID if missing
+    if (!formData.PatientID) {
+      formData.PatientID = Date.now();
+    }
+
+    // --- SAVE TO MONGODB ---
     try {
-      await dbConnect();
-      const savedCase = await Ectopic.create({
+      const conn = await dbConnect();
+      const collection = conn.connection.db.collection("ectopic_cases");
+
+      await collection.insertOne({
         ...formData,
+        createdAt: new Date(),
       });
 
-      console.log("✅ Saved form data to MongoDB with _id:", savedCase._id);
+      console.log("✅ Saved form data to MongoDB");
     } catch (dbError) {
       console.error("❌ MongoDB error:", dbError.message);
     }
@@ -138,8 +145,9 @@ export async function POST(request) {
             NextResponse.json(
               {
                 error: "Prediction failed",
-                details: errorString,
+                details: errorString || "Python process failed",
                 exitCode: code,
+                rawOutput: dataString,
               },
               { status: 500 }
             )
@@ -149,7 +157,7 @@ export async function POST(request) {
         try {
           const cleanOutput = dataString.trim();
           const lines = cleanOutput.split("\n");
-          const jsonLine = lines[lines.length - 1];
+          const jsonLine = lines[lines.length - 1]; // assume last line is JSON
           const result = JSON.parse(jsonLine);
 
           resolve(
@@ -170,6 +178,7 @@ export async function POST(request) {
                 error: "Failed to parse prediction result",
                 details: err.message,
                 rawOutput: dataString,
+                stderr: errorString,
               },
               { status: 500 }
             )
@@ -185,7 +194,7 @@ export async function POST(request) {
   }
 }
 
-// --- Handle OPTIONS for CORS ---
+// Handle OPTIONS for CORS
 export async function OPTIONS() {
   return new NextResponse(null, {
     status: 200,
