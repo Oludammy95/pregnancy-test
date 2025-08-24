@@ -6,7 +6,7 @@ export default async function handler(req, res) {
 
   if (req.method === "POST") {
     try {
-      const newRecord = new Ectopic(req.body);
+      const newRecord = new molar(req.body);
       await newRecord.save();
       res.status(201).json({ success: true, data: newRecord });
     } catch (error) {

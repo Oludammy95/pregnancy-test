@@ -1,7 +1,7 @@
 import { spawn } from "child_process";
 import path from "path";
 import { NextResponse } from "next/server";
-import clientPromise from "@/lib/mongodb"; // 👈 make sure this points correctly
+import dbConnect from "@/lib/mongodb"; // 👈 make sure this points correctly
 
 export async function POST(request) {
   try {

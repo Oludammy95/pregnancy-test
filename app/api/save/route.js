@@ -4,7 +4,7 @@ import Record from "@/models/records";
 
 export async function POST(req) {
   try {
-    await connectDB();
+    await dbConnect();
     const body = await req.json(); // read form data
     const patient = new Patient(body);
     await patient.save();

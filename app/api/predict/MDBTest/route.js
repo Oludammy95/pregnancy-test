@@ -3,7 +3,7 @@ import Record from "@/models/records";
 
 
 export async function POST(req) {
-  await connectDB();
+  await dbConnect();
 
   try {
     const body = await req.json();
