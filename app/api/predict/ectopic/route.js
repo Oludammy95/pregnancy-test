@@ -1,12 +1,13 @@
 import { spawn } from "child_process";
 import path from "path";
 import { NextResponse } from "next/server";
-import dbConnect from "@/lib/mongodb"; // 👈 make sure this points correctly
+import { dbConnect } from "@/lib/mongodb";
+import ectopic from "@/models1/ectopic";
 
 export async function POST(request) {
   try {
     const formData = await request.json();
-    console.log("Received form data:", JSON.stringify(formData, null, 2));
+    console.log("📩 Received form data:", JSON.stringify(formData, null, 2));
 
     // --- DOMAIN VALIDATION RULES ---
     const age = parseInt(formData.age, 10);
@@ -32,30 +33,26 @@ export async function POST(request) {
       errors.push("Parity + abortions cannot exceed gravidity.");
     }
     if (gravidity === 0 && parity === 0 && historyOfEctopicPregnancy !== "No") {
-      errors.push("If gravidity and parity are 0, history of ectopic pregnancy must be 'No'.");
+      errors.push(
+        "If gravidity and parity are 0, history of ectopic pregnancy must be 'No'."
+      );
     }
 
     if (errors.length > 0) {
-      return NextResponse.json({ error: "Invalid input", details: errors }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid input", details: errors },
+        { status: 400 }
+      );
     }
 
-    // Assign unique patient ID if missing
-    if (!formData.PatientID) {
-      formData.PatientID = Date.now();
-    }
-
-    // --- SAVE TO MONGODB ---
+    // --- SAVE TO MONGODB USING MONGOOSE ---
     try {
-      const client = await clientPromise;
-      const db = client.db("pregnancy_system"); // 👈 database name
-      const collection = db.collection("ectopic_cases"); // 👈 collection name
-
-      await collection.insertOne({
+      await dbConnect();
+      const savedCase = await Ectopic.create({
         ...formData,
-        createdAt: new Date(),
       });
 
-      console.log("✅ Saved form data to MongoDB");
+      console.log("✅ Saved form data to MongoDB with _id:", savedCase._id);
     } catch (dbError) {
       console.error("❌ MongoDB error:", dbError.message);
     }
@@ -84,7 +81,10 @@ export async function POST(request) {
     }
 
     // --- Auto-detect Python interpreter ---
-    const pythonCandidates = process.platform === "win32" ? ["python", "py", "python3"] : ["python3", "python"];
+    const pythonCandidates =
+      process.platform === "win32"
+        ? ["python", "py", "python3"]
+        : ["python3", "python"];
     let pythonCmd = null;
 
     for (const candidate of pythonCandidates) {
@@ -104,14 +104,21 @@ export async function POST(request) {
     }
 
     if (!pythonCmd) {
-      return NextResponse.json({ error: "No valid Python interpreter found" }, { status: 500 });
+      return NextResponse.json(
+        { error: "No valid Python interpreter found" },
+        { status: 500 }
+      );
     }
 
     // --- Run Python script ---
-    const python = spawn(pythonCmd, [pythonScript, "ectopic", JSON.stringify(formData)], {
-      cwd: process.cwd(),
-      env: { ...process.env, PYTHONUNBUFFERED: "1" },
-    });
+    const python = spawn(
+      pythonCmd,
+      [pythonScript, "ectopic", JSON.stringify(formData)],
+      {
+        cwd: process.cwd(),
+        env: { ...process.env, PYTHONUNBUFFERED: "1" },
+      }
+    );
 
     let dataString = "";
     let errorString = "";
@@ -129,7 +136,11 @@ export async function POST(request) {
         if (code !== 0) {
           return resolve(
             NextResponse.json(
-              { error: "Prediction failed", details: errorString, exitCode: code },
+              {
+                error: "Prediction failed",
+                details: errorString,
+                exitCode: code,
+              },
               { status: 500 }
             )
           );
@@ -145,13 +156,21 @@ export async function POST(request) {
             NextResponse.json({
               success: true,
               result,
-              debug: { pythonScript, pythonCmd, formDataReceived: formData },
+              debug: {
+                pythonScript,
+                pythonCmd,
+                formDataReceived: formData,
+              },
             })
           );
         } catch (err) {
           resolve(
             NextResponse.json(
-              { error: "Failed to parse prediction result", details: err.message, rawOutput: dataString },
+              {
+                error: "Failed to parse prediction result",
+                details: err.message,
+                rawOutput: dataString,
+              },
               { status: 500 }
             )
           );
@@ -159,11 +178,14 @@ export async function POST(request) {
       });
     });
   } catch (error) {
-    return NextResponse.json({ error: "Internal server error", details: error.message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error", details: error.message },
+      { status: 500 }
+    );
   }
 }
 
-// Handle OPTIONS for CORS
+// --- Handle OPTIONS for CORS ---
 export async function OPTIONS() {
   return new NextResponse(null, {
     status: 200,
