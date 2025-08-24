@@ -85,6 +85,7 @@ const MolarPregnancy = () => {
         recommendations: [
           "Error occurred during prediction",
           "Please check your input data and try again",
+          "If the problem persists, contact support",
         ],
       });
     }
@@ -135,12 +136,13 @@ const MolarPregnancy = () => {
             Molar Pregnancy Risk Assessment
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Complete this assessment to evaluate the risk of molar pregnancy
-            based on patient demographics, clinical symptoms, laboratory data,
-            and ultrasound findings.
+            Complete this comprehensive assessment to evaluate the risk of molar
+            pregnancy based on patient demographics, clinical symptoms,
+            laboratory data, and ultrasound findings.
           </p>
         </div>
 
+        {/* ✅ Correct Input Form Section from previous code */}
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Patient Demographics */}
           <FormSection title="Patient Demographics" icon={UserIcon}>
@@ -150,6 +152,7 @@ const MolarPregnancy = () => {
               type="number"
               value={formData.age}
               onChange={handleInputChange}
+              placeholder="Enter age in years"
               required
             />
             <FormInput
@@ -162,19 +165,21 @@ const MolarPregnancy = () => {
               required
             />
             <FormInput
-              label="Gravida"
+              label="Gravida (Number of previous pregnancies)"
               name="gravida"
               type="number"
               value={formData.gravida}
               onChange={handleInputChange}
+              placeholder="Total pregnancies including current"
               required
             />
             <FormInput
-              label="Parity"
+              label="Parity (Number of births)"
               name="parity"
               type="number"
               value={formData.parity}
               onChange={handleInputChange}
+              placeholder="Number of live births"
               required
             />
             <FormInput
@@ -184,6 +189,7 @@ const MolarPregnancy = () => {
               value={formData.historyOfMolarPregnancy}
               onChange={handleInputChange}
               options={yesNoOptions}
+              required
             />
             <FormInput
               label="History of Miscarriages"
@@ -192,6 +198,7 @@ const MolarPregnancy = () => {
               value={formData.historyOfMiscarriages}
               onChange={handleInputChange}
               options={yesNoOptions}
+              required
             />
             {formData.historyOfMiscarriages === "yes" && (
               <FormInput
@@ -200,11 +207,13 @@ const MolarPregnancy = () => {
                 type="number"
                 value={formData.numberOfMiscarriages}
                 onChange={handleInputChange}
+                placeholder="Enter number of miscarriages"
+                required
               />
             )}
           </FormSection>
 
-          {/* Symptoms */}
+          {/* Presenting Symptoms */}
           <FormSection title="Presenting Symptoms" icon={HeartIcon}>
             <FormInput
               label="Vaginal Bleeding"
@@ -213,49 +222,55 @@ const MolarPregnancy = () => {
               value={formData.vaginalBleeding}
               onChange={handleInputChange}
               options={yesNoOptions}
+              required
             />
             <FormInput
-              label="Excessive Nausea"
+              label="Excessive Nausea/Vomiting (Hyperemesis Gravidarum)"
               name="excessiveNausea"
               type="radio"
               value={formData.excessiveNausea}
               onChange={handleInputChange}
               options={yesNoOptions}
+              required
             />
             <FormInput
-              label="Pelvic Pain"
+              label="Pelvic Pain or Discomfort"
               name="pelvicPain"
               type="radio"
               value={formData.pelvicPain}
               onChange={handleInputChange}
               options={yesNoOptions}
+              required
             />
             <FormInput
-              label="Passage of Vesicles"
+              label="Passage of Vesicles (grape-like clusters or fluid-filled sacs)"
               name="passageOfVesicles"
               type="radio"
               value={formData.passageOfVesicles}
               onChange={handleInputChange}
               options={yesNoOptions}
+              required
             />
             <FormInput
-              label="Uterine Size Larger"
+              label="Uterine size larger than gestational age / Belly growing faster than expected"
               name="uterineSizeLarger"
               type="radio"
               value={formData.uterineSizeLarger}
               onChange={handleInputChange}
               options={yesNoOptions}
+              required
             />
           </FormSection>
 
-          {/* Labs */}
+          {/* Laboratory Data */}
           <FormSection title="Laboratory Data" icon={BeakerIcon}>
             <FormInput
-              label="Quantitative hCG"
+              label="Quantitative hCG levels (mIU/mL)"
               name="quantitativeHCG"
               type="number"
               value={formData.quantitativeHCG}
               onChange={handleInputChange}
+              placeholder="Enter hCG level"
             />
             <FormInput
               label="Blood Group"
@@ -274,19 +289,20 @@ const MolarPregnancy = () => {
               options={rhStatusOptions}
             />
             <FormInput
-              label="Thyroid Function"
+              label="Thyroid Function Test Results"
               name="thyroidFunction"
               type="select"
               value={formData.thyroidFunction}
               onChange={handleInputChange}
               options={thyroidOptions}
+              helpText="Hyperthyroidism may occur with molar pregnancy"
             />
           </FormSection>
 
-          {/* Ultrasound */}
+          {/* Ultrasound Findings */}
           <FormSection title="Ultrasound Findings" icon={MagnifyingGlassIcon}>
             <FormInput
-              label="Gestational Sac Present"
+              label="Gestational Sac Present?"
               name="gestationalSacPresent"
               type="radio"
               value={formData.gestationalSacPresent}
@@ -294,7 +310,7 @@ const MolarPregnancy = () => {
               options={yesNoOptions}
             />
             <FormInput
-              label="Fetal Heartbeat"
+              label="Fetal Heartbeat Detected?"
               name="fetalHeartbeat"
               type="radio"
               value={formData.fetalHeartbeat}
@@ -302,15 +318,16 @@ const MolarPregnancy = () => {
               options={yesNoOptions}
             />
             <FormInput
-              label="Snowstorm Appearance"
+              label="'Snowstorm' or 'Cluster of grapes' appearance?"
               name="snowstormAppearance"
               type="radio"
               value={formData.snowstormAppearance}
               onChange={handleInputChange}
               options={yesNoOptions}
+              helpText="Classic ultrasound appearance of molar pregnancy"
             />
             <FormInput
-              label="Ovarian Cysts"
+              label="Ovarian Theca Lutein Cysts Present?"
               name="ovarianCysts"
               type="radio"
               value={formData.ovarianCysts}
@@ -319,37 +336,40 @@ const MolarPregnancy = () => {
             />
           </FormSection>
 
-          {/* Risk Factors */}
+          {/* Other Risk Factors */}
           <FormSection title="Other Risk Factors" icon={ShieldExclamationIcon}>
             <FormInput
-              label="Assisted Reproduction"
+              label="Use of Assisted Reproductive Technology (IVF, IUI)"
               name="assistedReproduction"
               type="radio"
               value={formData.assistedReproduction}
               onChange={handleInputChange}
               options={yesNoOptions}
+              required
             />
             <FormInput
-              label="Smoking/Alcohol"
+              label="Smoking or Alcohol Use During Pregnancy"
               name="smokingAlcohol"
               type="radio"
               value={formData.smokingAlcohol}
               onChange={handleInputChange}
               options={yesNoOptions}
+              required
             />
           </FormSection>
 
-          {/* Submit */}
+          {/* Submit Button */}
           <div className="text-center">
             <button
               type="submit"
               disabled={isSubmitting}
-              className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:from-purple-700 hover:to-blue-700 disabled:opacity-50 transition-all duration-300"
+              className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:from-purple-700 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105"
             >
               {isSubmitting ? "Analyzing..." : "Assess Molar Pregnancy Risk"}
             </button>
           </div>
         </form>
+        {/* ✅ End of Correct Input Form Section */}
 
         {/* Results */}
         {result && (
