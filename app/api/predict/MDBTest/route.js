@@ -1,5 +1,5 @@
 import dbConnect from "@/lib/mongodb";
-import Record from "../../../models/records";
+import Record from "@/models/records";
 
 
 export async function POST(req) {
