@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation"; // ✅ App Router way
+import { usePathname } from "next/navigation"; 
 import {
   HomeIcon,
   HeartIcon,
@@ -10,9 +10,9 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 
-const Header = ({ children }) => {
+const Layout = ({ children }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const pathname = usePathname(); // ✅ get current path
+  const pathname = usePathname();
 
   const navigation = [
     { name: "Home", href: "/", icon: HomeIcon },
@@ -20,10 +20,10 @@ const Header = ({ children }) => {
     { name: "Molar Pregnancy Risk", href: "/molar", icon: UserGroupIcon },
   ];
 
-  const isActive = (href) => pathname === href; // ✅ compare with pathname
+  const isActive = (href) => pathname.startsWith(href);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-pink-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-pink-50 flex flex-col">
       {/* Navigation */}
       <nav className="bg-white shadow-lg border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -59,6 +59,7 @@ const Header = ({ children }) => {
             </div>
             <div className="sm:hidden flex items-center">
               <button
+                aria-label="Toggle menu"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="text-gray-500 hover:text-gray-600 p-2"
               >
@@ -100,7 +101,9 @@ const Header = ({ children }) => {
       </nav>
 
       {/* Main content */}
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {children}
+      </main>
 
       {/* Footer */}
       <footer className="bg-gray-50 border-t border-gray-200 mt-12">
@@ -117,4 +120,4 @@ const Header = ({ children }) => {
   );
 };
 
-export default Header;
+export default Layout;

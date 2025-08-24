@@ -4,12 +4,7 @@ import Layout from "../../components/Header";
 import FormInput from "../../components/FormInput";
 import FormSection from "../../components/FormSection";
 import {
-  UserIcon,
-  ClockIcon,
   ExclamationTriangleIcon,
-  BeakerIcon,
-  MagnifyingGlassIcon,
-  ChartBarIcon,
   CheckCircleIcon,
 } from "@heroicons/react/24/outline";
 
@@ -48,7 +43,7 @@ const EctopicPregnancy = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState(null);
-  const [dbMessage, setDbMessage] = useState(""); // ✅ new: store DB response
+  const [dbMessage, setDbMessage] = useState("");
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -61,10 +56,10 @@ const EctopicPregnancy = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setDbMessage(""); 
+    setDbMessage("");
 
     try {
-      // 1️⃣ Save to MongoDB via API
+      // 1️⃣ Save to MongoDB
       const dbRes = await fetch("/api/ectopic", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -78,7 +73,7 @@ const EctopicPregnancy = () => {
         setDbMessage("❌ Failed to save to database: " + (dbData.error || ""));
       }
 
-      // 2️⃣ Call your AI prediction util
+      // 2️⃣ Prediction
       const { predictEctopic } = await import("../../utils/api");
       const response = await predictEctopic(formData);
 
@@ -130,10 +125,163 @@ const EctopicPregnancy = () => {
           </p>
         </div>
 
-        {/* ✅ Form */}
+        {/* ✅ Full Form */}
         <form onSubmit={handleSubmit} className="space-y-8">
-          {/* Form sections here (no change) */}
-          {/* ... keep your FormInput + FormSection components as-is ... */}
+          <FormSection title="Demographics">
+            <FormInput
+              label="Age"
+              name="age"
+              type="number"
+              value={formData.age}
+              onChange={handleInputChange}
+            />
+            <FormInput
+              label="Gravidity"
+              name="gravidity"
+              type="number"
+              value={formData.gravidity}
+              onChange={handleInputChange}
+            />
+            <FormInput
+              label="Parity"
+              name="parity"
+              type="number"
+              value={formData.parity}
+              onChange={handleInputChange}
+            />
+            <FormInput
+              label="Abortions"
+              name="abortions"
+              type="number"
+              value={formData.abortions}
+              onChange={handleInputChange}
+            />
+          </FormSection>
+
+          <FormSection title="Patient History">
+            <FormInput
+              label="History of Ectopic Pregnancy"
+              name="historyOfEctopicPregnancy"
+              type="select"
+              options={yesNoOptions}
+              value={formData.historyOfEctopicPregnancy}
+              onChange={handleInputChange}
+            />
+            <FormInput
+              label="Pelvic Inflammatory Disease"
+              name="pelvicInflammatoryDisease"
+              type="select"
+              options={yesNoOptions}
+              value={formData.pelvicInflammatoryDisease}
+              onChange={handleInputChange}
+            />
+            <FormInput
+              label="Tubal Surgery History"
+              name="tubalSurgeryHistory"
+              type="select"
+              options={yesNoOptions}
+              value={formData.tubalSurgeryHistory}
+              onChange={handleInputChange}
+            />
+            <FormInput
+              label="Infertility Treatment"
+              name="infertilityTreatment"
+              type="select"
+              options={yesNoOptions}
+              value={formData.infertilityTreatment}
+              onChange={handleInputChange}
+            />
+          </FormSection>
+
+          <FormSection title="Risk Factors">
+            <FormInput
+              label="Smoking Status"
+              name="smokingStatus"
+              type="select"
+              options={[
+                { value: "Yes", label: "Yes" },
+                { value: "No", label: "No" },
+              ]}
+              value={formData.smokingStatus}
+              onChange={handleInputChange}
+            />
+            <FormInput
+              label="Contraceptive Use"
+              name="contraceptiveUse"
+              type="text"
+              value={formData.contraceptiveUse}
+              onChange={handleInputChange}
+            />
+          </FormSection>
+
+          <FormSection title="Clinical & Symptoms">
+            <FormInput
+              label="Last Menstrual Period (Days)"
+              name="lastMenstrualPeriodDays"
+              type="number"
+              value={formData.lastMenstrualPeriodDays}
+              onChange={handleInputChange}
+            />
+            <FormInput
+              label="Vaginal Bleeding"
+              name="vaginalBleeding"
+              type="select"
+              options={yesNoOptions}
+              value={formData.vaginalBleeding}
+              onChange={handleInputChange}
+            />
+            <FormInput
+              label="Abdominal Pain"
+              name="abdominalPain"
+              type="select"
+              options={yesNoOptions}
+              value={formData.abdominalPain}
+              onChange={handleInputChange}
+            />
+          </FormSection>
+
+          <FormSection title="Laboratory Tests">
+            <FormInput
+              label="Serum hCG Level"
+              name="serumHCGLevel"
+              type="number"
+              value={formData.serumHCGLevel}
+              onChange={handleInputChange}
+            />
+            <FormInput
+              label="Progesterone Level"
+              name="progesteroneLevel"
+              type="number"
+              value={formData.progesteroneLevel}
+              onChange={handleInputChange}
+            />
+          </FormSection>
+
+          <FormSection title="Ultrasound Findings">
+            <FormInput
+              label="Uterine Size"
+              name="uterineSizeByUltrasound"
+              type="text"
+              value={formData.uterineSizeByUltrasound}
+              onChange={handleInputChange}
+            />
+            <FormInput
+              label="Adnexal Mass"
+              name="adnexalMass"
+              type="select"
+              options={yesNoOptions}
+              value={formData.adnexalMass}
+              onChange={handleInputChange}
+            />
+            <FormInput
+              label="Free Fluid in Pouch of Douglas"
+              name="freeFluidInPouchOfDouglas"
+              type="select"
+              options={yesNoOptions}
+              value={formData.freeFluidInPouchOfDouglas}
+              onChange={handleInputChange}
+            />
+          </FormSection>
 
           {/* Submit Button */}
           <div className="text-center">
@@ -142,12 +290,14 @@ const EctopicPregnancy = () => {
               disabled={isSubmitting}
               className="bg-gradient-to-r from-red-600 to-pink-600 text-white px-8 py-3 rounded-lg font-medium hover:from-red-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105"
             >
-              {isSubmitting ? "Saving & Analyzing..." : "Assess Ectopic Pregnancy Risk"}
+              {isSubmitting
+                ? "Saving & Analyzing..."
+                : "Assess Ectopic Pregnancy Risk"}
             </button>
           </div>
         </form>
 
-        {/* ✅ Database status message */}
+        {/* Database status */}
         {dbMessage && (
           <p className="mt-4 text-center text-sm font-medium text-gray-700">
             {dbMessage}
@@ -189,19 +339,6 @@ const EctopicPregnancy = () => {
                     </li>
                   ))}
                 </ul>
-              </div>
-            </div>
-
-            <div className="mt-6 p-4 bg-amber-50 border-l-4 border-amber-400 rounded">
-              <div className="flex">
-                <ExclamationTriangleIcon className="h-5 w-5 text-amber-400 mr-3 flex-shrink-0" />
-                <div>
-                  <p className="text-sm text-amber-700">
-                    <strong>Important:</strong> This assessment is for
-                    informational purposes only. Please consult with a qualified
-                    healthcare professional for proper diagnosis and treatment.
-                  </p>
-                </div>
               </div>
             </div>
           </div>

@@ -4,53 +4,39 @@ import Layout from "../../components/Header";
 import FormInput from "../../components/FormInput";
 import FormSection from "../../components/FormSection";
 import {
-  UserIcon,
-  ExclamationTriangleIcon,
-  BeakerIcon,
   UserGroupIcon,
-  MagnifyingGlassIcon,
   CheckCircleIcon,
-  HeartIcon,
-  ShieldExclamationIcon,
+  ExclamationTriangleIcon,
 } from "@heroicons/react/24/outline";
 
 const MolarPregnancy = () => {
   const [formData, setFormData] = useState({
-    // Patient Demographics
     age: "",
     gravida: "",
     parity: "",
     historyOfMolarPregnancy: "",
     historyOfMiscarriages: "",
     numberOfMiscarriages: "",
-
-    // Presenting Symptoms
     vaginalBleeding: "",
     excessiveNausea: "",
     pelvicPain: "",
     passageOfVesicles: "",
     uterineSizeLarger: "",
-
-    // Laboratory Data
     quantitativeHCG: "",
     bloodGroup: "",
     rhStatus: "",
     thyroidFunction: "",
-
-    // Ultrasound Findings
     gestationalSacPresent: "",
     fetalHeartbeat: "",
     snowstormAppearance: "",
     ovarianCysts: "",
-
-    // Other Risk Factors
     assistedReproduction: "",
     smokingAlcohol: "",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState(null);
-  const [dbMessage, setDbMessage] = useState(""); // ✅ feedback for MongoDB save
+  const [dbMessage, setDbMessage] = useState("");
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -66,7 +52,6 @@ const MolarPregnancy = () => {
     setDbMessage("");
 
     try {
-      // 1️⃣ Save to MongoDB via API
       const dbRes = await fetch("/api/molar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -80,7 +65,6 @@ const MolarPregnancy = () => {
         setDbMessage("❌ Failed to save to database: " + (dbData.error || ""));
       }
 
-      // 2️⃣ Run prediction
       const { predictMolar } = await import("../../utils/api");
       const response = await predictMolar(formData);
 
@@ -150,15 +134,53 @@ const MolarPregnancy = () => {
             Molar Pregnancy Risk Assessment
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Complete this comprehensive assessment to evaluate the risk of molar
-            pregnancy based on patient demographics, clinical symptoms,
-            laboratory data, and ultrasound findings.
+            Complete this assessment to evaluate the risk of molar pregnancy
+            based on patient demographics, symptoms, labs, and ultrasound findings.
           </p>
         </div>
 
+        {/* FORM */}
         <form onSubmit={handleSubmit} className="space-y-8">
-          {/* All your FormSection + FormInput fields remain unchanged */}
-          {/* ... (keep your existing form inputs here) ... */}
+          {/* Patient Demographics */}
+          <FormSection title="Patient Demographics">
+            <FormInput label="Age" name="age" type="number" value={formData.age} onChange={handleInputChange} />
+            <FormInput label="Gravida" name="gravida" type="number" value={formData.gravida} onChange={handleInputChange} />
+            <FormInput label="Parity" name="parity" type="number" value={formData.parity} onChange={handleInputChange} />
+            <FormInput label="History of Molar Pregnancy" name="historyOfMolarPregnancy" type="select" options={yesNoOptions} value={formData.historyOfMolarPregnancy} onChange={handleInputChange} />
+            <FormInput label="History of Miscarriages" name="historyOfMiscarriages" type="select" options={yesNoOptions} value={formData.historyOfMiscarriages} onChange={handleInputChange} />
+            <FormInput label="Number of Miscarriages" name="numberOfMiscarriages" type="number" value={formData.numberOfMiscarriages} onChange={handleInputChange} />
+          </FormSection>
+
+          {/* Presenting Symptoms */}
+          <FormSection title="Presenting Symptoms">
+            <FormInput label="Vaginal Bleeding" name="vaginalBleeding" type="select" options={yesNoOptions} value={formData.vaginalBleeding} onChange={handleInputChange} />
+            <FormInput label="Excessive Nausea" name="excessiveNausea" type="select" options={yesNoOptions} value={formData.excessiveNausea} onChange={handleInputChange} />
+            <FormInput label="Pelvic Pain" name="pelvicPain" type="select" options={yesNoOptions} value={formData.pelvicPain} onChange={handleInputChange} />
+            <FormInput label="Passage of Vesicles" name="passageOfVesicles" type="select" options={yesNoOptions} value={formData.passageOfVesicles} onChange={handleInputChange} />
+            <FormInput label="Uterine Size Larger than Dates" name="uterineSizeLarger" type="select" options={yesNoOptions} value={formData.uterineSizeLarger} onChange={handleInputChange} />
+          </FormSection>
+
+          {/* Lab Data */}
+          <FormSection title="Laboratory Data">
+            <FormInput label="Quantitative HCG" name="quantitativeHCG" type="number" value={formData.quantitativeHCG} onChange={handleInputChange} />
+            <FormInput label="Blood Group" name="bloodGroup" type="select" options={bloodGroupOptions} value={formData.bloodGroup} onChange={handleInputChange} />
+            <FormInput label="Rh Status" name="rhStatus" type="select" options={rhStatusOptions} value={formData.rhStatus} onChange={handleInputChange} />
+            <FormInput label="Thyroid Function" name="thyroidFunction" type="select" options={thyroidOptions} value={formData.thyroidFunction} onChange={handleInputChange} />
+          </FormSection>
+
+          {/* Ultrasound */}
+          <FormSection title="Ultrasound Findings">
+            <FormInput label="Gestational Sac Present" name="gestationalSacPresent" type="select" options={yesNoOptions} value={formData.gestationalSacPresent} onChange={handleInputChange} />
+            <FormInput label="Fetal Heartbeat" name="fetalHeartbeat" type="select" options={yesNoOptions} value={formData.fetalHeartbeat} onChange={handleInputChange} />
+            <FormInput label="Snowstorm Appearance" name="snowstormAppearance" type="select" options={yesNoOptions} value={formData.snowstormAppearance} onChange={handleInputChange} />
+            <FormInput label="Ovarian Cysts" name="ovarianCysts" type="select" options={yesNoOptions} value={formData.ovarianCysts} onChange={handleInputChange} />
+          </FormSection>
+
+          {/* Risk Factors */}
+          <FormSection title="Other Risk Factors">
+            <FormInput label="Assisted Reproduction" name="assistedReproduction" type="select" options={yesNoOptions} value={formData.assistedReproduction} onChange={handleInputChange} />
+            <FormInput label="Smoking / Alcohol" name="smokingAlcohol" type="select" options={yesNoOptions} value={formData.smokingAlcohol} onChange={handleInputChange} />
+          </FormSection>
 
           {/* Submit Button */}
           <div className="text-center">
@@ -172,7 +194,7 @@ const MolarPregnancy = () => {
           </div>
         </form>
 
-        {/* ✅ Database status message */}
+        {/* DB message */}
         {dbMessage && (
           <p className="mt-4 text-center text-sm font-medium text-gray-700">
             {dbMessage}
@@ -223,10 +245,8 @@ const MolarPregnancy = () => {
                 <div>
                   <p className="text-sm text-amber-700">
                     <strong>Important:</strong> This assessment is for
-                    informational purposes only. Molar pregnancy requires
-                    immediate medical attention and specialized treatment.
-                    Please consult with a qualified healthcare professional
-                    immediately.
+                    informational purposes only. Please consult a qualified
+                    healthcare professional immediately.
                   </p>
                 </div>
               </div>

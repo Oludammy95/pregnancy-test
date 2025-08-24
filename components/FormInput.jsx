@@ -10,7 +10,8 @@ const FormInput = ({
   helpText = "",
 }) => {
   const baseInputClasses =
-    "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm transition-colors";
+    "mt-1 block w-full rounded-md border-gray-300 shadow-sm " +
+    "focus:border-blue-500 focus:ring-blue-500 sm:text-sm transition-colors";
 
   if (type === "select") {
     return (
@@ -28,15 +29,20 @@ const FormInput = ({
           onChange={onChange}
           className={baseInputClasses}
           required={required}
+          aria-describedby={helpText ? `${name}-help` : undefined}
         >
-          <option value="">Select {label.toLowerCase()}</option>
+          <option value="">-- Select {label} --</option>
           {options.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
             </option>
           ))}
         </select>
-        {helpText && <p className="mt-1 text-xs text-gray-500">{helpText}</p>}
+        {helpText && (
+          <p id={`${name}-help`} className="mt-1 text-xs text-gray-500">
+            {helpText}
+          </p>
+        )}
       </div>
     );
   }
@@ -48,9 +54,13 @@ const FormInput = ({
           <legend className="block text-sm font-medium text-gray-700 mb-2">
             {label} {required && <span className="text-red-500">*</span>}
           </legend>
-          <div className="flex space-x-6">
+          <div className="flex flex-wrap gap-4">
             {options.map((option) => (
-              <div key={option.value} className="flex items-center">
+              <label
+                key={option.value}
+                htmlFor={`${name}-${option.value}`}
+                className="flex items-center space-x-2"
+              >
                 <input
                   id={`${name}-${option.value}`}
                   name={name}
@@ -59,18 +69,18 @@ const FormInput = ({
                   checked={value === option.value}
                   onChange={onChange}
                   className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300"
+                  required={required}
                 />
-                <label
-                  htmlFor={`${name}-${option.value}`}
-                  className="ml-2 text-sm text-gray-700"
-                >
-                  {option.label}
-                </label>
-              </div>
+                <span className="text-sm text-gray-700">{option.label}</span>
+              </label>
             ))}
           </div>
         </fieldset>
-        {helpText && <p className="mt-1 text-xs text-gray-500">{helpText}</p>}
+        {helpText && (
+          <p id={`${name}-help`} className="mt-1 text-xs text-gray-500">
+            {helpText}
+          </p>
+        )}
       </div>
     );
   }
@@ -92,8 +102,13 @@ const FormInput = ({
         placeholder={placeholder}
         className={baseInputClasses}
         required={required}
+        aria-describedby={helpText ? `${name}-help` : undefined}
       />
-      {helpText && <p className="mt-1 text-xs text-gray-500">{helpText}</p>}
+      {helpText && (
+        <p id={`${name}-help`} className="mt-1 text-xs text-gray-500">
+          {helpText}
+        </p>
+      )}
     </div>
   );
 };
