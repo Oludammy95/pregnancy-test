@@ -168,31 +168,31 @@ const EctopicPregnancy = () => {
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Demographics */}
           <FormSection title="Demographics">
-            <FormInput label="Age" name="age" type="number" value={formData.age} onChange={handleInputChange} />
-            <FormInput label="Gravidity" name="gravidity" type="number" value={formData.gravidity} onChange={handleInputChange} />
-            <FormInput label="Parity" name="parity" type="number" value={formData.parity} onChange={handleInputChange} />
-            <FormInput label="Abortions" name="abortions" type="number" value={formData.abortions} onChange={handleInputChange} />
+            <FormInput label="Age" name="age" type="number" value={formData.age} onChange={handleInputChange} required />
+            <FormInput label="Gravidity" name="gravidity" type="number" value={formData.gravidity} onChange={handleInputChange} required />
+            <FormInput label="Parity" name="parity" type="number" value={formData.parity} onChange={handleInputChange} required />
+            <FormInput label="Abortions" name="abortions" type="number" value={formData.abortions} onChange={handleInputChange} required />
           </FormSection>
 
           {/* Patient History */}
           <FormSection title="Patient History">
-            <FormInput label="History of Ectopic Pregnancy" name="historyOfEctopicPregnancy" type="select" options={yesNoOptions} value={formData.historyOfEctopicPregnancy} onChange={handleInputChange} />
-            <FormInput label="Pelvic Inflammatory Disease" name="pelvicInflammatoryDisease" type="select" options={yesNoOptions} value={formData.pelvicInflammatoryDisease} onChange={handleInputChange} />
-            <FormInput label="Tubal Surgery History" name="tubalSurgeryHistory" type="select" options={yesNoOptions} value={formData.tubalSurgeryHistory} onChange={handleInputChange} />
-            <FormInput label="Infertility Treatment" name="infertilityTreatment" type="select" options={yesNoOptions} value={formData.infertilityTreatment} onChange={handleInputChange} />
+            <FormInput label="History of Ectopic Pregnancy" name="historyOfEctopicPregnancy" type="select" options={yesNoOptions} value={formData.historyOfEctopicPregnancy} onChange={handleInputChange} required/>
+            <FormInput label="Pelvic Inflammatory Disease" name="pelvicInflammatoryDisease" type="select" options={yesNoOptions} value={formData.pelvicInflammatoryDisease} onChange={handleInputChange} required />
+            <FormInput label="Tubal Surgery History" name="tubalSurgeryHistory" type="select" options={yesNoOptions} value={formData.tubalSurgeryHistory} onChange={handleInputChange} required />
+            <FormInput label="Infertility Treatment" name="infertilityTreatment" type="select" options={yesNoOptions} value={formData.infertilityTreatment} onChange={handleInputChange} required/>
           </FormSection>
 
           {/* Risk Factors */}
           <FormSection title="Risk Factors">
-            <FormInput label="Smoking Status" name="smokingStatus" type="select" options={yesNoOptions} value={formData.smokingStatus} onChange={handleInputChange} />
+            <FormInput label="Smoking Status" name="smokingStatus" type="select" options={yesNoOptions} value={formData.smokingStatus} onChange={handleInputChange} required />
             <FormInput label="Contraceptive Use" name="contraceptiveUse" type="text" value={formData.contraceptiveUse} onChange={handleInputChange} required />
           </FormSection>
 
           {/* Symptoms */}
           <FormSection title="Clinical & Symptoms">
-            <FormInput label="Last Menstrual Period (Days)" name="lastMenstrualPeriodDays" type="number" value={formData.lastMenstrualPeriodDays} onChange={handleInputChange} />
-            <FormInput label="Vaginal Bleeding" name="vaginalBleeding" type="select" options={yesNoOptions} value={formData.vaginalBleeding} onChange={handleInputChange} />
-            <FormInput label="Abdominal Pain" name="abdominalPain" type="select" options={yesNoOptions} value={formData.abdominalPain} onChange={handleInputChange} />
+            <FormInput label="Last Menstrual Period (Days)" name="lastMenstrualPeriodDays" type="number" value={formData.lastMenstrualPeriodDays} onChange={handleInputChange} required />
+            <FormInput label="Vaginal Bleeding" name="vaginalBleeding" type="select" options={yesNoOptions} value={formData.vaginalBleeding} onChange={handleInputChange} required />
+            <FormInput label="Abdominal Pain" name="abdominalPain" type="select" options={yesNoOptions} value={formData.abdominalPain} onChange={handleInputChange} required/>
           </FormSection>
 
           {/* Labs */}
