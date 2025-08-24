@@ -2,7 +2,7 @@ import { spawn } from "child_process";
 import path from "path";
 import { NextResponse } from "next/server";
 import { dbConnect } from "@/lib/mongodb";
-import ectopic from "@/models1/ectopic";
+import ectopic from "@/model1/ectopic";
 
 export async function POST(request) {
   try {
