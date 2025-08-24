@@ -6,7 +6,7 @@ export async function POST(req) {
   try {
     await dbConnect();
     const body = await req.json(); // read form data
-    const patient = new Patient(body);
+    const patient = new Record(body);
     await patient.save();
     return NextResponse.json({ success: true, patient });
   } catch (err) {
