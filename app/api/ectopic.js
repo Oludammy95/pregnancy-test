@@ -1,4 +1,4 @@
-import dbConnect from "@/lib/dbConnect";
+import dbConnect from "@/lib/mongodb";
 import ectopic from "@/model1/ectopic";
 
 export default async function handler(req, res) {

@@ -1,4 +1,4 @@
-import dbConnect from "../pregnancy-test/lib/mongodb";
+import dbConnect from "@/lib/mongodb";
 import Record from "@/models/records";
 
 

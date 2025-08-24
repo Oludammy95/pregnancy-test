@@ -2,7 +2,7 @@
 import { spawn } from "child_process";
 import path from "path";
 import { NextResponse } from "next/server";
-import clientPromise from "../../lib/mongodb"; // 👈 make sure this points to your connector
+import clientPromise from "@/lib/mongodb"; // 👈 make sure this points to your connector
 
 export async function POST(request) {
   try {
